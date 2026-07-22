@@ -6,6 +6,9 @@ Authors@R:
 Description: Create interactive UpSet plots using 'plotly', including copyable
     tooltip information synchronized into HTML elements for use in Quarto, R Markdown
     and Shiny. The package focuses on intersections of gene sets and other list-like data.
+URL: https://github.com/Rbunensi/upsetly,
+    https://rbunensi.github.io/upsetly/
+BugReports: https://github.com/Rbunensi/upsetly/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -12,7 +12,7 @@ You can install the development version from GitHub:
 
 ```r
 # install.packages("remotes")
-remotes::install_github("Anbunensi/upsetly")
+remotes::install_github("Rbunensi/upsetly")
 ```
 
 Then load:
