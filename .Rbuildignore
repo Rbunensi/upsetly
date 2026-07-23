@@ -1,2 +1,6 @@
 ^upsetly\.Rproj$
 ^\.Rproj\.user$
+^\.github$
+^cran-comments\.md$
+^docs$
+^LICENSE\.md$

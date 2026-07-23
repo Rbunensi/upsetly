@@ -1,6 +1,6 @@
 # upsetly
 
-Interactive UpSet plots with **plotly**, with tooltip information that can be copied easily in HTML documents (Quarto, R Markdown, Shiny).
+Interactive UpSet plots with **plotly**, with intersection details that can be copied easily in HTML documents (Quarto, R Markdown, Shiny).
 
 `upsetly` focuses on UpSet-style visualization of set intersections (e.g. differential gene lists), and adds JavaScript hooks so that all tooltip text (Intersection, Size, Members, etc.) can be synced into a separate text box for copy‑and‑paste.
 
@@ -8,7 +8,7 @@ Interactive UpSet plots with **plotly**, with tooltip information that can be co
 
 ## Installation
 
-You can install the development version from GitHub:
+Until the first CRAN release is accepted, install the development version from GitHub:
 
 ```r
 # install.packages("remotes")
@@ -33,8 +33,8 @@ Given a data frame with:
 
 `upsetly()` will:
 
-1. Compute all non‑empty intersections across the set columns.  
-2. Keep only intersections with size ≥ `min_intersection_size`.  
+1. Compute all non-empty intersections across the set columns.
+2. Keep only intersections with size at least `min_intersection_size`.
 3. Optionally keep only the largest `max_n_intersections` intersections.  
 4. Draw:
    - **Left bar chart**: size of each set.  
@@ -92,7 +92,6 @@ format: html
 
 ```{r}
 library(upsetly)
-library(dplyr)
 ```
 ```{r}
 set.seed(1)
@@ -160,7 +159,8 @@ upsetly(
   title = "UpSet (plotly)",
   height = 500,
   width = NULL,
-  members_per_line = 20
+  members_per_line = 20,
+  box_id = NULL
 )
 ```
 
@@ -170,8 +170,9 @@ upsetly(
 - `min_intersection_size`: minimum number of elements for an intersection to be kept.  
 - `max_n_intersections`:
   - Limits how many intersections are kept (largest first).
-  - Also limits how many member IDs are shown for each intersection in the tooltip.  
+  - Also limits how many member IDs are shown for each intersection in the hover tooltip for compatibility with earlier versions; synchronized box content remains complete.
 - `members_per_line`: how many member IDs to show per line in the tooltip / text box.  
+- `box_id`: optional HTML element ID used for synchronized, copyable intersection details.
 - `point_size`: dot size in the dot matrix.  
 - Color and layout arguments allow customization of bar colors, dot colors, and overall size.
 
@@ -179,5 +180,4 @@ upsetly(
 
 ## License
 
-MIT © Anbunensi
-```
+[MIT](LICENSE.md) © 2026 Anbunensi

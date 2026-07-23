@@ -2,7 +2,7 @@
 % Please edit documentation in R/upsetly.R
 \name{upsetly}
 \alias{upsetly}
-\title{Interactive UpSet plot with copyable tooltip text}
+\title{Create an interactive UpSet plot}
 \usage{
 upsetly(
   x,
@@ -20,104 +20,83 @@ upsetly(
   height = 500,
   width = NULL,
   members_per_line = 20,
-  ...
+  box_id = NULL
 )
 }
 \arguments{
-\item{x}{A data frame containing at least the set columns and optionally an ID column.}
+\item{x}{A data frame containing set-membership columns and, optionally, an
+identifier column.}
 
-\item{set_cols}{Character vector of column names (in \code{x}) that define the sets.
-These columns are interpreted as 0/1 (or logical/character) membership indicators.
-If \code{NULL}, all columns except \code{id_col} will be treated as set columns.}
+\item{set_cols}{A non-empty character vector naming the membership columns
+in \code{x}. Logical values and non-zero numeric values are treated as members.
+For character and factor columns, empty strings and common false values
+such as \code{"0"}, \code{"false"}, and \code{"no"} are treated as non-members; other
+non-empty values are treated as members. If \code{NULL}, all columns other than
+\code{id_col} are used.}
 
-\item{id_col}{Optional name of a column in \code{x} that identifies each element
-(e.g. gene ID). If \code{NULL}, a synthetic \code{.elem_id} column will be created.}
+\item{id_col}{An optional single column name containing element identifiers.
+If \code{NULL}, sequential identifiers are generated.}
 
-\item{min_intersection_size}{Minimum size of an intersection (number of elements)
-to retain in the plot.}
+\item{min_intersection_size}{A positive integer giving the smallest
+intersection to retain.}
 
-\item{max_n_intersections}{Maximum number of intersections to keep, sorted by
-descending size. Also used as an upper bound for the number of member IDs
-shown in the tooltip for each intersection. If \code{NULL}, no explicit limit is applied.}
+\item{max_n_intersections}{An optional positive integer giving the maximum
+number of intersections to display, ordered by decreasing size. For
+compatibility with earlier versions, it also limits the number of member
+identifiers shown in each hover tooltip. Complete details synchronized to
+\code{box_id} are not truncated.}
 
-\item{point_size}{Size of points in the dot matrix.}
+\item{point_size}{A positive number giving the marker size in the membership
+matrix.}
 
-\item{bar_color_sets}{Bar color for set sizes (left).}
+\item{bar_color_sets}{Color used for the set-size bars.}
 
-\item{bar_color_inters}{Bar color for intersections (top).}
+\item{bar_color_inters}{Color used for the intersection-size bars.}
 
-\item{active_color}{Color for dots that are part of an intersection.}
+\item{active_color}{Color used for active membership markers.}
 
-\item{inactive_color}{Color for dots that are not part of an intersection.}
+\item{inactive_color}{Color used for inactive membership markers.}
 
-\item{line_color}{Color for vertical lines connecting dots in the dot matrix.}
+\item{line_color}{Color used for lines joining active membership markers.}
 
-\item{title}{Plot title.}
+\item{title}{A single character string used as the plot title.}
 
-\item{height}{Height of the plot (pixels).}
+\item{height}{A positive number giving the widget height in pixels.}
 
-\item{width}{Width of the plot (pixels).}
+\item{width}{An optional positive number giving the widget width in pixels.}
 
-\item{members_per_line}{Number of member IDs shown per line in the tooltip
-(and in the synchronized text box).}
+\item{members_per_line}{A positive integer giving the number of member
+identifiers placed on each tooltip line.}
+
+\item{box_id}{An optional single character string containing the HTML \code{id}
+of an element, commonly a \code{pre} element. Hovering over an intersection bar
+updates the element, clicking locks its content, and double-clicking the
+plot unlocks and clears it.}
 }
 \value{
-A 'plotly' htmlwidget. When rendered in HTML, the widget also injects
-JavaScript that synchronizes full tooltip text into \verb{#members_box} if present,
-with click-to-lock and double-click-to-unlock behavior.
+A \code{plotly} htmlwidget.
 }
 \description{
-\code{upsetly()} creates an interactive UpSet-like plot using 'plotly'. It supports:
-\itemize{
-\item Counting intersections across multiple binary set columns.
-\item Visualizing set sizes (left bar chart) and intersections (top bar chart + dot matrix).
-\item Displaying rich tooltip text including intersection name, size, and members.
-\item Synchronizing the full tooltip text into an HTML element with id \code{members_box}
-(if present), which makes it easy to copy the information in Quarto/R Markdown.
-}
-
-When used in an HTML environment (e.g., Quarto, R Markdown, or Shiny),
-you can add a tag such as:
-\preformatted{
-<pre id="members_box" style="
-  border: 1px solid #ccc;
-  padding: 8px;
-  min-height: 120px;
-  white-space: pre-wrap;
-  font-family: monospace;
-"></pre>
-}
-Then:
-\itemize{
-\item Moving the mouse over an intersection bar updates the box with the tooltip text
-(Intersection, Size, Members, etc.).
-\item Clicking a bar will \strong{lock} the content so that hover on other bars does not change it.
-\item Double-clicking the plot background will \strong{unlock} and clear the box.
-}
+\code{upsetly()} creates an interactive UpSet-style visualization with three
+coordinated parts: set-size bars, intersection-size bars, and a membership
+matrix. Intersection tooltips can include member identifiers. In HTML
+documents, complete intersection details can optionally be synchronized to
+a separate element so that readers can select and copy the text.
 }
 \examples{
-\dontrun{
-library(upsetly)
-
-# Example binary matrix
 set.seed(1)
-df <- data.frame(
-  gene = paste0("g", 1:100),
-  A = rbinom(100, 1, 0.3),
-  B = rbinom(100, 1, 0.4),
-  C = rbinom(100, 1, 0.2),
+memberships <- data.frame(
+  gene = paste0("g", seq_len(40)),
+  A = stats::rbinom(40, 1, 0.35),
+  B = stats::rbinom(40, 1, 0.40),
+  C = stats::rbinom(40, 1, 0.25),
   stringsAsFactors = FALSE
 )
 
-p <- upsetly(
-  x = df,
+upsetly(
+  memberships,
   set_cols = c("A", "B", "C"),
   id_col = "gene",
-  box_id = "members_box",
-  max_n_intersections = 50,
-  members_per_line = 10
+  max_n_intersections = 12
 )
-p
-}
-
 }
