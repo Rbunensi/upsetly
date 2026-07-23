@@ -18,14 +18,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macos-latest, r: release}
-          - {os: windows-latest, r: release}
-          - {os: ubuntu-latest, r: devel, http-user-agent: release}
-          - {os: ubuntu-latest, r: oldrel-1}
+          - {os: macos-latest, r: release, cran_incoming: false}
+          - {os: windows-latest, r: release, cran_incoming: false}
+          - {os: ubuntu-latest, r: devel, http-user-agent: release, cran_incoming: true}
+          - {os: ubuntu-latest, r: oldrel-1, cran_incoming: false}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      _R_CHECK_CRAN_INCOMING_: ${{ matrix.config.cran_incoming }}
+      _R_CHECK_CRAN_INCOMING_REMOTE_: ${{ matrix.config.cran_incoming }}
 
     steps:
       - uses: actions/checkout@v6
